@@ -15,12 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #ifndef STAFF_H
 #define STAFF_H
 
 #include "problem.h"
 #include "gautility.h"
+#include <string>
+#include <vector>
 
 class Staff : public Problem
 {
@@ -31,7 +32,12 @@ public:
     void crossover(const Sol &a, const Sol &b, Sol &c, Sol &d);
     double evaluate(Sol &s);
 private:
-
+    
+    std::vector<std::vector<int> > vSection;
+    std::vector<std::vector<int> > vEmployee;
+    std::vector<int> vPositions;
+    std::vector<int> vLookupSection;
+    void intTok(std::vector<int>& v, const std::string& s);
 };
 
 #endif

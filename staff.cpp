@@ -20,10 +20,73 @@
 #include <math.h>
 #include <vector>
 #include <algorithm>
+#include <fstream>
+#include <cctype>
+
+// Integer Tokenizor. Put ints from string into vector
+void Staff::intTok(std::vector<int>& v, const std::string& s)
+{
+    std::string sInteger = "";
+    char cPrev = ' ';
+
+    for (auto& c : s)
+    {
+        if(isdigit(c))
+        {
+            // Accept a minus sign from previous pass
+            if(cPrev == '-')
+                sInteger = "-"; 
+
+            sInteger += c;
+        }
+        else if(sInteger.length())
+        {
+            // Convert to int and put in vector
+            v.push_back(std::stoi(sInteger));
+            sInteger = "";
+        }
+        
+        cPrev = c;
+    }
+}
 
 Staff::Staff(char *filename)
 {
-    // TODO!
+    std::ifstream in(filename); 
+    std::string line;
+    std::vector<int> vInteger;
+    int iPositions = 0, iEmployees = 0, iSections = 0;
+    
+    // Read in sections
+    do 
+    {
+        std::getline(in, line);        
+        intTok(vInteger, line);
+        if(vInteger.size())
+        {
+            iPositions += vInteger.size(); 
+            vSection.push_back(vInteger);
+            iSections++;
+        }
+    }
+    while (vInteger.size());
+        
+    // Read in employees
+    do 
+    {
+        std::getline(in, line);        
+        intTok(vInteger, line);
+        if(vInteger.size())
+        {
+            assert(vInteger.size() == vSection.size());
+            vEmployee.push_back(vInteger);
+            iEmployees++;
+        }
+    }
+    while (vInteger.size());
+    
+    // Sanity check
+    assert(iEmployees < iPositions);
 }
 
 void Staff::encode(Sol &s)
