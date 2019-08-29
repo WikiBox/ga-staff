@@ -31,74 +31,101 @@ void Staff::intTok(std::vector<int>& v, const std::string& s)
 
     for (auto& c : s)
     {
-        if(isdigit(c))
+        if (isdigit(c))
         {
             // Accept a minus sign from previous pass
-            if(cPrev == '-')
-                sInteger = "-"; 
+            if (cPrev == '-')
+                sInteger = "-";
 
             sInteger += c;
         }
-        else if(sInteger.length())
+        else if (sInteger.length())
         {
             // Convert to int and put in vector
             v.push_back(std::stoi(sInteger));
             sInteger = "";
         }
-        
+
         cPrev = c;
     }
+    
+    // Handle residual terminating integer
+    if (sInteger.length())
+        v.push_back(std::stoi(sInteger));
 }
 
-Staff::Staff(char *filename)
+Staff::Staff(const char *filename)
 {
-    std::ifstream in(filename); 
+    std::ifstream in(filename);
     std::string line;
     std::vector<int> vInteger;
-    int iPositions = 0, iEmployees = 0, iSections = 0;
-    
+    iPos = iEmp = iSec = 0;
+
     // Read in sections
-    do 
+    do
     {
-        std::getline(in, line);        
+        std::getline(in, line);
         intTok(vInteger, line);
-        if(vInteger.size())
+        if (vInteger.size())
         {
-            iPositions += vInteger.size(); 
-            vSection.push_back(vInteger);
-            iSections++;
+            iPos += vInteger.size();
+            vSec.push_back(vInteger);
+            iSec++;
         }
     }
     while (vInteger.size());
-        
+
     // Read in employees
-    do 
+    do
     {
-        std::getline(in, line);        
+        std::getline(in, line);
         intTok(vInteger, line);
-        if(vInteger.size())
+        if (vInteger.size())
         {
-            assert(vInteger.size() == vSection.size());
-            vEmployee.push_back(vInteger);
-            iEmployees++;
+            assert(vInteger.size() == vSec.size());
+            vEmp.push_back(vInteger);
+            iEmp++;
         }
     }
     while (vInteger.size());
-    
+
     // Sanity check
-    assert(iEmployees < iPositions);
+    assert(iEmp < iPos);
+
+    for (auto& vPos : vSec)
+    {
+        for (auto& iPos : vPos)  // local iPos!
+        {
+            vPos.push_back(iPos);
+            vLookupSection.push_back(iSec);
+        }
+        iSec++;
+    }
 }
 
 void Staff::encode(Sol &s)
 {
-    // TODO!
+    s.resize(iPos);
+    for (int i = 0; i != iEmp; i++)
+        s[i] = i;
+
+    for (int i = iEmp; i != iPos; i++)
+        s[i] = -1; // Not assigned
+
+    std::random_shuffle(s.begin(), s.end());
 }
 
 void Staff::mutate(Sol &s)
 {
-    // TODO!
-}
+    // Do a random three position rotation
+    int iSize = s.size();
+    int tmp, i0 = irand(iSize), i1 = irand(iSize), i2 = irand(iSize);
 
+    tmp = s[i0];
+    s[i0] = s[i1];
+    s[i1] = s[i2];
+    s[i2] = tmp;
+}
 
 // For highly optimized PMX use:
 #define PMX_lookup 1
@@ -176,7 +203,14 @@ void Staff::crossover(const Sol &a, const Sol &b, Sol &c, Sol &d)
 
 double Staff::evaluate(Sol &s)
 {
-    // TODO!
+    int len = s.size();
+    int score;
+
+    for (int iPos = 0; iPos != len; iPos++)
+    {
+        if (s[iPos] != -1)
+            score += vPos[iPos] + vEmp[s[iPos]][vLookupSection[iPos]];
+    }
     double sum = 0;
 
     return sum;

@@ -26,17 +26,20 @@
 class Staff : public Problem
 {
 public:
-    Staff(char *filename);
+    Staff(const char *filename);
     void encode(Sol &s);
     void mutate(Sol &s);
     void crossover(const Sol &a, const Sol &b, Sol &c, Sol &d);
     double evaluate(Sol &s);
 private:
+
+    int iSec, iPos, iEmp;
+    std::vector<std::vector<int> > vSec;
+    std::vector<std::vector<int> > vEmp;
+    std::vector<int> vPos; // The sections laid out flat
     
-    std::vector<std::vector<int> > vSection;
-    std::vector<std::vector<int> > vEmployee;
-    std::vector<int> vPositions;
-    std::vector<int> vLookupSection;
+    std::vector<int> vLookupSection; // Lookup table for position/section
+
     void intTok(std::vector<int>& v, const std::string& s);
 };
 
