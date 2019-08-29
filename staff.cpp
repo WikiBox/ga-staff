@@ -211,7 +211,6 @@ double Staff::evaluate(Sol &s)
         if (s[iPos] != -1)
             score += vPos[iPos] + vEmp[s[iPos]][vLookupSection[iPos]];
     }
-    double sum = 0;
-
-    return sum;
+ 
+    return (double)score;
 }
