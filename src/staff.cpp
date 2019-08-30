@@ -22,12 +22,15 @@
 #include <algorithm>
 #include <fstream>
 #include <cctype>
+#include <iostream>
 
 // Integer Tokenizor. Put ints from string into vector
 void Staff::intTok(std::vector<int>& v, const std::string& s)
 {
     std::string sInteger = "";
     char cPrev = ' ';
+    
+    v.clear();
 
     for (auto& c : s)
     {
@@ -92,25 +95,24 @@ Staff::Staff(const char *filename)
     // Sanity check
     assert(iEmp < iPos);
 
-    for (auto& vPos : vSec)
+    // Populate vPos and lookup table pos/section
+    int i = 0;
+    for (auto& vPosSec : vSec)
     {
-        for (auto& iPos : vPos)  // local iPos!
+        for (auto& iPos : vPosSec)  // local iPos!
         {
             vPos.push_back(iPos);
-            vLookupSection.push_back(iSec);
+            vLookupSection.push_back(i);
         }
-        iSec++;
+        i++;
     }
 }
 
 void Staff::encode(Sol &s)
 {
     s.resize(iPos);
-    for (int i = 0; i != iEmp; i++)
+    for (int i = 0; i != iPos; i++)
         s[i] = i;
-
-    for (int i = iEmp; i != iPos; i++)
-        s[i] = -1; // Not assigned
 
     std::random_shuffle(s.begin(), s.end());
 }
@@ -208,9 +210,9 @@ double Staff::evaluate(Sol &s)
 
     for (int iPos = 0; iPos != len; iPos++)
     {
-        if (s[iPos] != -1)
+        if (s[iPos] < iEmp)
             score += vPos[iPos] + vEmp[s[iPos]][vLookupSection[iPos]];
     }
- 
-    return (double)score;
+    
+    return (double)100000 - score;
 }

@@ -27,9 +27,9 @@
 Ga::Ga(Problem *pr, int ps, int e, double sp, double mf)
 {
     popSize = ps;
+    newPopSize = ps;
     assert(ps >= 10);
     
-    newPopSize = ps;
     elitism = e;
     assert(e < ps);
     
@@ -57,7 +57,6 @@ Ga::Ga(Problem *pr, int ps, int e, double sp, double mf)
 
 void Ga::generation(void)
 {
-
     std::swap(oldPop, newPop);
     newPop.clear();
 
@@ -76,14 +75,14 @@ void Ga::generation(void)
                 q = oldPop.begin();
 
         int i = popSize * pow(drand(), selPres),
-                j = popSize * pow(drand(), selPres);
+            j = popSize * pow(drand(), selPres);
 
+        assert(i < oldPop.size() && j < oldPop.size());
+        
         std::advance(p, i); // Should use some random access container instead?
         std::advance(q, j); // But then I'd have to sort it instead...
 
-        Sol &a = p->second,
-                &b = q->second,
-                c, d;
+        Sol &a = p->second, &b = q->second, c, d;
 
         problem->crossover(a, b, c, d);
         crossovers += 2;
@@ -97,5 +96,5 @@ void Ga::generation(void)
         newPop.insert(std::make_pair(problem->evaluate(d), d));
     }
 
-    popSize = newPopSize;
+    popSize = newPop.size();
 }

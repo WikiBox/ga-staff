@@ -45,13 +45,12 @@ class Ga
 public:
 
     // Create a population, based on some problem type
-    Ga(Problem *pr, int ps = 200, int e = 1, double sp = 1.3, double mf = 0.001);
+    Ga(Problem *pr, int ps = 500, int e = 5, double sp = 1.3, double mf = 0.01);
 
     // Evolve the next generation
     void generation(void);
 
     // Change the selection pressure
-
     void setSelPres(double p)
     {
         selPres = p;

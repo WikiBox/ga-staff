@@ -35,10 +35,10 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/ga.o \
-	${OBJECTDIR}/main.o \
-	${OBJECTDIR}/problem.o \
-	${OBJECTDIR}/staff.o
+	${OBJECTDIR}/src/ga.o \
+	${OBJECTDIR}/src/main.o \
+	${OBJECTDIR}/src/problem.o \
+	${OBJECTDIR}/src/staff.o
 
 
 # C Compiler Flags
@@ -65,25 +65,25 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/ga-staff: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/ga-staff ${OBJECTFILES} ${LDLIBSOPTIONS}
 
-${OBJECTDIR}/ga.o: ga.cpp
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/src/ga.o: src/ga.cpp
+	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/ga.o ga.cpp
+	$(COMPILE.cc) -O2 -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ga.o src/ga.cpp
 
-${OBJECTDIR}/main.o: main.cpp
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/src/main.o: src/main.cpp
+	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.cc) -O2 -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/main.o src/main.cpp
 
-${OBJECTDIR}/problem.o: problem.cpp
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/src/problem.o: src/problem.cpp
+	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/problem.o problem.cpp
+	$(COMPILE.cc) -O2 -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/problem.o src/problem.cpp
 
-${OBJECTDIR}/staff.o: staff.cpp
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/src/staff.o: src/staff.cpp
+	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/staff.o staff.cpp
+	$(COMPILE.cc) -O2 -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/staff.o src/staff.cpp
 
 # Subprojects
 .build-subprojects:

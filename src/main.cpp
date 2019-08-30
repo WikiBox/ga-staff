@@ -24,33 +24,35 @@
 
 int main(int argc, char *argv[])
 {
-    Staff staff("filename");
+    Staff staff(argv[1]);
     Ga ga(&staff);
 
     double first = ga.begin()->first;
-    double best = first + 1;
+    double best = first - 1;
     int generation = 0;
 
     // Default mutation frequency
-    const double dDefaultMutFreq = 0.001;
+    const double dDefaultMutFreq = 0.01;
     double dMutFreq = dDefaultMutFreq;
 
+    ga.setMutFreq(dMutFreq);
+    
     auto start = std::chrono::steady_clock::now(); // Start timeout timer
 
     for (;;)
     {
-        if (ga.begin()->first > best)
+        if (ga.begin()->first < best)
         {
             start = std::chrono::steady_clock::now(); // Reset timeout timer
-            dMutFreq = 0.001; // Reset mutation frequency
+            dMutFreq = dDefaultMutFreq; // Reset mutation frequency
 
             best = ga.begin()->first;
             std::cout << "\n\n        ******** GA STAFF stats *********"
-                    << "\n Highest score: " << best
-                    << "\n Initial score: " << first
+                    << "\n Highest score: " << 100000 - best
+                    << "\n Initial score: " << 100000 - first
                     << "\n    Generation: " << generation
                     << "\n    Crossovers: " << ga.getCrossovers()
-                    << "\n   Improvement: " << 100.0 * (best - first) / first << "%";
+                    << "\n   Improvement: " << 100.0 * (first - best) / first << "%";
         }
 
         int iSecondsLapsed = std::chrono::duration_cast<std::chrono::seconds>
@@ -59,7 +61,7 @@ int main(int argc, char *argv[])
         if (iSecondsLapsed > 30)
         {
             if (dMutFreq < 0.2) // Max mutation frequency is 20% 
-                dMutFreq = dMutFreq + 0.001; // Increase mutation frequency
+                dMutFreq = dMutFreq + 0.01; // Increase mutation frequency
         }
         else if (iSecondsLapsed > 120)
             break; // Quit program 120 seconds after last improvement
