@@ -20,10 +20,10 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <chrono>
 
 int main(int argc, char *argv[])
 {
-
     Staff staff("filename");
     Ga ga(&staff);
 
@@ -31,11 +31,19 @@ int main(int argc, char *argv[])
     double best = first + 1;
     int generation = 0;
 
+    // Default mutation frequency
+    const double dDefaultMutFreq = 0.001;
+    double dMutFreq = dDefaultMutFreq;
+
+    auto start = std::chrono::steady_clock::now(); // Start timeout timer
+
     for (;;)
     {
-
         if (ga.begin()->first > best)
         {
+            start = std::chrono::steady_clock::now(); // Reset timeout timer
+            dMutFreq = 0.001; // Reset mutation frequency
+
             best = ga.begin()->first;
             std::cout << "\n\n        ******** GA STAFF stats *********"
                     << "\n Highest score: " << best
@@ -44,6 +52,19 @@ int main(int argc, char *argv[])
                     << "\n    Crossovers: " << ga.getCrossovers()
                     << "\n   Improvement: " << 100.0 * (best - first) / first << "%";
         }
+
+        int iSecondsLapsed = std::chrono::duration_cast<std::chrono::seconds>
+                (std::chrono::steady_clock::now() - start).count();
+
+        if (iSecondsLapsed > 30)
+        {
+            if (dMutFreq < 0.2) // Max mutation frequency is 20% 
+                dMutFreq = dMutFreq + 0.001; // Increase mutation frequency
+        }
+        else if (iSecondsLapsed > 120)
+            break; // Quit program 120 seconds after last improvement
+
+        ga.setMutFreq(dMutFreq);
 
         ga.generation();
 
